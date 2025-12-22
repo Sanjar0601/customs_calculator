@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=customs_db
+    ports:
+      - "5434:5432"  # Оставляем доступ снаружи, если нужно подключаться через DBeaver
+
+  web:
+    build: .
+    container_name: customs_api
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      # Пробрасываем код внутрь, чтобы при изменении файлов локально сервер перезагружался (Live Reload)
+      - .:/app
+      # Отдельно пробрасываем media, чтобы загруженные файлы или CSV сохранялись
+      - ./media:/app/media
+    env_file:
+      - .env
+    environment:
+      # Переопределяем хост БД для Docker сети (имя сервиса 'db')
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      - POSTGRES_NAME=customs_db
+
+volumes:
+  postgres_data:
