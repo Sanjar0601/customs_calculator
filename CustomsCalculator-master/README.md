@@ -53,7 +53,7 @@
 **1. Клонирование репозитория**
 ```Bash
 
-git clone https://github.com/Shavkat07/CustomsCalculator.git
+git clone https://github.com/Sanjar0601/customs_calculator
 cd CustomsCalculator
 
 ```
